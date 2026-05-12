@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisis Support Router - Quick Help</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .wizard-step {
+            display: none;
+        }
+
+        .wizard-step.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .step-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .option-btn {
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 15px;
+            text-align: left;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .option-btn.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-next {
+            background: #667eea;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-back {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-back:hover {
+            background: #e0e0e0;
+        }
+
+        .progress {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            transition: all 0.2s ease;
+        }
+
+        .progress-dot.active {
+            background: #667eea;
+            transform: scale(1.3);
+        }
+
+        .progress-dot.completed {
+            background: #4caf50;
+        }
+
+        .results-container {
+            background: #f8f9ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-item h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .result-item p {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e8eaf6;
+            color: #3f51b5;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-top: 5px;
+        }
+
+        .crisis-alert {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .success-message {
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .emergency-banner {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .emergency-banner strong {
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🆘 Crisis Support Router</h1>
+            <p>Quick access to the help you need, right now</p>
+        </div>
+
+        <div class="content">
+            <!-- Step 1: Are you in crisis? -->
+            <div class="wizard-step active" data-step="1">
+                <div class="progress">
+                    <div class="progress-dot active"></div>
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                </div>
+
+                <div class="step-title">Are you in immediate danger?</div>
+                <div class="step-description">This helps us find the fastest support for you.</div>
+
+                <div class="options">
+                    <button class="option-btn" data-value="crisis">
+                        🚨 Yes, I need emergency help RIGHT NOW
+                    </button>
+                    <button class="option-btn" data-value="urgent">
+                        ⚠️ I'm struggling and need urgent support
+                    </button>
+                    <button class="option-btn" data-value="support">
+                        💬 I need someone to talk to
+                    </button>
+                    <button class="option-btn" data-value="information">
+                        ℹ️ I want information and resources
+                    </button>
+                </div>
+
+                <div class="buttons">
+                    <button class="btn btn-next" onclick="goToStep(2)">Next →</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Who are you seeking help for? -->
+            <div class="wizard-step" data-step="2">
+                <div class="progress">
+                    <div class="progress-dot completed"></div>
+                    <div class="progress-dot active"></div>
+                    <div class="progress-dot"></div>
+                </div>
+
+                <div class="step-title">Who are you seeking help for?</div>
+                <div class="step-description">This helps us find the most relevant services.</div>
+
+                <div class="options">
+                    <button class="option-btn" data-value="self">👤 Myself</button>
+                    <button class="option-btn" data-value="child">👧 A child (0-12)</button>
+                    <button class="option-btn" data-value="teen">👦 A teenager (13-17)</button>
+                    <button class="option-btn" data-value="family">👨‍👩‍👧‍👦 Someone in my family</button>
+                    <button class="option-btn" data-value="friend">👥 A friend</button>
+                </div>
+
+                <div class="buttons">
+                    <button class="btn btn-back" onclick="goToStep(1)">← Back</button>
+                    <button class="btn btn-next" onclick="goToStep(3)">Next →</button>
+                </div>
+            </div>
+
+            <!-- Step 3: What region? -->
+            <div class="wizard-step" data-step="3">
+                <div class="progress">
+                    <div class="progress-dot completed"></div>
+                    <div class="progress-dot completed"></div>
+                    <div class="progress-dot active"></div>
+                </div>
+
+                <div class="step-title">Where are you located?</div>
+                <div class="step-description">So we can find local services for you.</div>
+
+                <div class="options">
+                    <button class="option-btn" data-value="newcastle">📍 Newcastle</button>
+                    <button class="option-btn" data-value="lake-macquarie">📍 Lake Macquarie</button>
+                    <button class="option-btn" data-value="maitland">📍 Maitland</button>
+                    <button class="option-btn" data-value="lower-hunter">📍 Lower Hunter</button>
+                    <button class="option-btn" data-value="other">📍 Other region</button>
+                </div>
+
+                <div class="buttons">
+                    <button class="btn btn-back" onclick="goToStep(2)">← Back</button>
+                    <button class="btn btn-next" onclick="showResults()">Find Help →</button>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="wizard-step" data-step="results">
+                <div id="results-content"></div>
+                <div class="buttons">
+                    <button class="btn btn-back" onclick="reset()">← Start Over</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mockServices = {
+            crisis: [
+                {
+                    name: "Lifeline Australia",
+                    category: "Crisis Support",
+                    region: "All",
+                    phone: "13 11 14",
+                    description: "24/7 crisis support via phone. Free, confidential.",
+                    type: "Phone Hotline"
+                },
+                {
+                    name: "Emergency Services",
+                    category: "Emergency",
+                    region: "All",
+                    phone: "000",
+                    description: "Call 000 if you or someone else is in immediate danger",
+                    type: "Emergency"
+                }
+            ],
+            urgent: [
+                {
+                    name: "Beyond Blue",
+                    category: "Counseling",
+                    region: "All",
+                    phone: "1300 224 636",
+                    description: "Support for depression, anxiety and suicide",
+                    type: "Counseling"
+                }
+            ],
+            support: [
+                {
+                    name: "Lifeline Australia",
+                    category: "Support Hotline",
+                    region: "All",
+                    phone: "13 11 14",
+                    description: "Talk to someone who cares, 24/7",
+                    type: "Peer Support"
+                }
+            ],
+            information: [
+                {
+                    name: "Suicide Prevention Network",
+                    category: "Information & Resources",
+                    region: "Hunter",
+                    phone: "Contact via website",
+                    description: "Resources, training, and information about suicide prevention",
+                    type: "Educational"
+                }
+            ]
+        };
+
+        let state = { crisisLevel: null, forWhom: null, region: null };
+
+        function goToStep(step) {
+            const currentStep = document.querySelector('.wizard-step.active');
+            const selected = currentStep.querySelector('.option-btn.selected');
+            
+            if (!selected && step > 1) {
+                alert('Please select an option to continue');
+                return;
+            }
+
+            if (selected) {
+                const stepKeys = ['crisisLevel', 'forWhom', 'region'];
+                state[stepKeys[step - 2]] = selected.dataset.value;
+            }
+
+            document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+            document.querySelector(`[data-step="${step}"]`).classList.add('active');
+        }
+
+        function showResults() {
+            const currentStep = document.querySelector('.wizard-step.active');
+            const selected = currentStep.querySelector('.option-btn.selected');
+            
+            if (!selected) {
+                alert('Please select your region');
+                return;
+            }
+
+            state.region = selected.dataset.value;
+            const matchingServices = mockServices[state.crisisLevel] || [];
+            
+            let html = state.crisisLevel === 'crisis' 
+                ? '<div class="crisis-alert">🚨 If you\'re in immediate danger, call 000</div>'
+                : `<div class="success-message">✓ We found ${matchingServices.length} services</div>`;
+            
+            html += '<div class="results-container">';
+            matchingServices.forEach(service => {
+                html += `
+                    <div class="result-item">
+                        <h3>${service.name}</h3>
+                        <p>${service.description}</p>
+                        <div><span class="tag">${service.type}</span></div>
+                        <p style="margin-top: 10px; font-weight: bold; color: #667eea;">📞 ${service.phone}</p>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            html += '<div class="emergency-banner"><strong>💙 You\'re not alone. Help is here.</strong></div>';
+            
+            document.getElementById('results-content').innerHTML = html;
+            document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+            document.querySelector('[data-step="results"]').classList.add('active');
+        }
+
+        function reset() {
+            state = { crisisLevel: null, forWhom: null, region: null };
+            document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+            document.querySelector('[data-step="1"]').classList.add('active');
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.option-btn').forEach(b => {
+                        if (b.parentElement === this.parentElement) b.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
